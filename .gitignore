@@ -1,0 +1,11 @@
+# local tooling
+.claude/
+
+# large media, not part of the build
+*.mp4
+*.mov
+
+# os junk
+Thumbs.db
+desktop.ini
+.DS_Store

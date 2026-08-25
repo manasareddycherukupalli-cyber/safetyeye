@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SafetyEye — iQOO Hackathon 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C1116; --ink-2:#39454F; --mute:#6C7A87; --line:#DDE3E9;
+  --paper:#FFFFFF; --wash:#F4F7F9;
+  --mint:#00A97A; --mint-l:#E6F7F1;
+  --red:#E5484D; --red-l:#FDECEC;
+  --amber:#C77B10; --amber-l:#FDF3E3;
+  --blue:#2B7FD4; --blue-l:#EAF3FC;
+  --f:"Inter",system-ui,sans-serif; --m:"JetBrains Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);color:var(--ink);background:#8E99A4;padding:24px}
+
+.slide{
+  width:297mm;height:210mm;background:var(--paper);margin:0 auto 18px;
+  padding:17mm 18mm 15mm;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;
+  box-shadow:0 10px 30px rgba(0,0,0,.28);
+}
+.num{position:absolute;bottom:9mm;right:18mm;font-family:var(--m);
+  font-size:9pt;color:#B4BEC7;font-weight:700}
+.brandmark{position:absolute;top:13mm;right:18mm;display:flex;align-items:center;gap:7px}
+.brandmark .m{width:19px;height:19px;border-radius:6px;background:var(--mint);
+  display:grid;place-items:center}
+.brandmark .m svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:2.3;
+  stroke-linecap:round;stroke-linejoin:round}
+.brandmark span{font-size:9.5pt;font-weight:800;letter-spacing:-.01em}
+.brandmark span i{color:var(--mint);font-style:normal}
+
+.kicker{font-size:10pt;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--mint);margin-bottom:8mm;display:flex;align-items:center;gap:8px;flex:none}
+.kicker::before{content:"";width:20px;height:2.5px;background:var(--mint);border-radius:2px}
+h1{font-size:44pt;line-height:1.02;letter-spacing:-.035em;font-weight:800}
+h2{font-size:31pt;line-height:1.09;letter-spacing:-.03em;font-weight:800;margin-bottom:9mm;flex:none}
+h3{font-size:13pt;font-weight:700;letter-spacing:-.015em;margin-bottom:3mm}
+p{font-size:11.6pt;line-height:1.62;color:var(--ink-2)}
+.lead{font-size:15pt;line-height:1.5;color:var(--ink-2);font-weight:400}
+strong{font-weight:700;color:var(--ink)}
+.mono{font-family:var(--m)}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12mm;flex:1;align-items:stretch}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:8mm;flex:1;align-content:center}
+.cols4{display:grid;grid-template-columns:repeat(4,1fr);gap:6mm;flex:1;align-content:center}
+/* stacked cards in a column share the height instead of leaving a gap below */
+.fill{display:flex;flex-direction:column;gap:5mm;height:100%}
+.fill>.card{flex:1;display:flex;flex-direction:column;justify-content:center}
+
+.card{background:var(--wash);border:1px solid var(--line);border-radius:10px;padding:8mm}
+.card.mint{background:var(--mint-l);border-color:#B9E6D6}
+.card.red{background:var(--red-l);border-color:#F6C9CA}
+.card.amber{background:var(--amber-l);border-color:#F0DDB8}
+.card.blue{background:var(--blue-l);border-color:#C6DEF6}
+.card .ico{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+  margin-bottom:4mm;background:#fff;border:1px solid var(--line)}
+.card .ico svg{width:16px;height:16px;fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.card p{font-size:10.6pt;line-height:1.58}
+
+.big{font-family:var(--m);font-size:40pt;font-weight:700;letter-spacing:-.04em;line-height:1}
+.big.mint{color:var(--mint)} .big.red{color:var(--red)} .big.amber{color:var(--amber)}
+.lbl{font-size:8.5pt;text-transform:uppercase;letter-spacing:.13em;
+  color:var(--mute);font-weight:700;margin-top:2mm}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);
+  border-radius:10px;overflow:hidden;margin:7mm 0;flex:1;align-items:stretch}
+.split>div{padding:9mm;display:flex;flex-direction:column;justify-content:center}
+.split .a{background:var(--red-l);border-right:1px solid var(--line)}
+.split .b{background:var(--mint-l)}
+.split h3{font-size:11pt}
+.split .tag{font-size:8pt;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:3mm}
+
+ul{list-style:none}
+li{font-size:11pt;line-height:1.58;color:var(--ink-2);padding-left:7.5mm;
+  position:relative;margin-bottom:4.6mm}
+li:last-child{margin-bottom:0}
+li::before{content:"";position:absolute;left:0;top:7px;width:10px;height:2.5px;
+  border-radius:2px;background:var(--mint)}
+li b{color:var(--ink);font-weight:700}
+
+.flow{display:flex;align-items:stretch;gap:0;margin-top:5mm}
+.flow .step{flex:1;background:var(--wash);border:1px solid var(--line);padding:7mm 6mm;
+  position:relative}
+.flow .step:first-child{border-radius:10px 0 0 10px}
+.flow .step:last-child{border-radius:0 10px 10px 0}
+.flow .step+.step{border-left:0}
+.flow .n{font-family:var(--m);font-size:9.5pt;font-weight:700;color:var(--mint);margin-bottom:4mm}
+.flow h3{font-size:11.5pt;margin-bottom:2.5mm}
+.flow p{font-size:10.2pt;line-height:1.55}
+.flow .arr{position:absolute;right:-7px;top:50%;transform:translateY(-50%);
+  width:14px;height:14px;background:#fff;border-right:1px solid var(--line);
+  border-top:1px solid var(--line);rotate:45deg;z-index:2}
+
+.rubric{width:100%;border-collapse:collapse;margin-top:4mm}
+.rubric th{text-align:left;font-size:9pt;text-transform:uppercase;letter-spacing:.11em;
+  color:var(--mute);padding:4mm;border-bottom:2px solid var(--ink);font-weight:700}
+.rubric td{padding:4.6mm 4mm;border-bottom:1px solid var(--line);font-size:10.8pt;
+  color:var(--ink-2);vertical-align:top}
+.rubric td:first-child{font-family:var(--m);font-weight:700;color:var(--ink);width:18mm}
+.rubric td b{color:var(--ink)}
+
+.pill{display:inline-block;padding:1.6mm 3.4mm;border-radius:99px;font-size:8.5pt;
+  font-weight:700;letter-spacing:.02em}
+.pill.mint{background:var(--mint-l);color:var(--mint)}
+.pill.amber{background:var(--amber-l);color:var(--amber)}
+.pill.grey{background:var(--wash);color:var(--mute)}
+
+.foot{border-top:1px solid var(--line);padding-top:5mm;margin-top:auto;
+  display:flex;justify-content:space-between;align-items:flex-end;gap:10mm}
+.foot p{font-size:9.5pt}
+
+.cover{justify-content:center;background:
+  radial-gradient(700px 420px at 78% 18%, #EAF7F2 0%, transparent 66%),
+  var(--paper)}
+.cover h1{max-width:190mm}
+.cover .sub{font-size:15pt;color:var(--ink-2);margin-top:6mm;max-width:170mm;line-height:1.45}
+.cover .meta{position:absolute;bottom:16mm;left:18mm;right:18mm;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  border-top:1px solid var(--line);padding-top:5mm}
+.cover .meta div{font-size:9.5pt;color:var(--mute)}
+.cover .meta b{display:block;color:var(--ink);font-size:11pt;font-weight:700;margin-bottom:1mm}
+
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:9mm}
+.logo .m{width:34px;height:34px;border-radius:10px;background:var(--mint);
+  display:grid;place-items:center}
+.logo .m svg{width:19px;height:19px;stroke:#fff;fill:none;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+.logo .t{font-size:17pt;font-weight:800;letter-spacing:-.02em}
+.logo .t i{color:var(--mint);font-style:normal}
+
+/* one content-heavy slide keeps a tighter scale rather than shrinking the deck */
+.dense h2{font-size:27pt;margin-bottom:7mm}
+.dense li{font-size:10.2pt;line-height:1.5;margin-bottom:3.2mm}
+.dense .card{padding:6.5mm}
+.dense .card p{font-size:9.9pt;line-height:1.52}
+.dense .card h3{font-size:12pt;margin-bottom:2.4mm}
+.dense .fill{gap:4mm}
+.dense .cols{gap:10mm}
+
+@page{size:A4 landscape;margin:0}
+@media print{
+  body{background:#fff;padding:0}
+  .slide{margin:0;box-shadow:none;break-after:page;page-break-after:always}
+  .slide:last-child{break-after:auto;page-break-after:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- 1 COVER -->
+<section class="slide cover">
+  <div class="logo">
+    <div class="m"><svg viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <div class="t">Safety<i>Eye</i></div>
+  </div>
+  <h1>The phone that shouts before someone gets hurt.</h1>
+  <p class="sub">Any phone becomes an offline workplace-safety monitor. It watches the hazard,
+     warns the worker <strong>before</strong> they cross the line, and writes the shift report itself.</p>
+  <div class="meta">
+    <div><b>Team Fight Club</b>Avula Surendra · Manasa Reddy</div>
+    <div><b>On-device</b>Open-source vision model · zero uplink</div>
+    <div><b>Bengaluru City Battle</b>Open Innovation · Phase 1 idea</div>
+  </div>
+</section>
+
+<!-- 2 PROBLEM -->
+<section class="slide">
+  <div class="brandmark">
+    <div class="m"><svg viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <span>Safety<i>Eye</i></span>
+  </div>
+  <div class="kicker">The problem</div>
+  <h2>The sites most likely to hurt someone<br>are the ones with nobody watching.</h2>
+  <div class="cols">
+    <div>
+      <p style="margin-bottom:5mm">On a small construction site, factory floor or warehouse, safety is enforced by
+        one supervisor walking around with a clipboard <strong>two or three times a shift</strong>.</p>
+      <p style="margin-bottom:5mm">The rest of the time nobody is watching. The violations that cause serious
+        injuries are mundane and continuous — someone crossing into an active machinery zone, a fire exit
+        stacked with material, too many people in a confined space.</p>
+      <p>Each one is obvious on sight and <strong>invisible in the records</strong>, because an incident is
+        only logged if a supervisor happened to be standing there.</p>
+    </div>
+    <div class="fill">
+      <div class="card red">
+        <h3>The fix exists. It doesn't reach them.</h3>
+        <p>Camera-based monitoring means IP cameras, cabling, a DVR or edge server, an internet uplink and a
+           per-camera subscription. That is a capital project — roughly <strong>₹2,00,000 to start</strong>.</p>
+      </div>
+      <div class="card">
+        <h3>So the economics invert safety</h3>
+        <p>A contractor running an eight-month site, or a workshop with thirty employees, will never buy it.
+           The workplaces with the worst safety outcomes are precisely the ones with <strong>no monitoring at
+           all</strong> — not because nobody cares, but because the only product on the market costs more
+           than the business can justify.</p>
+      </div>
+    </div>
+  </div>
+  <div class="num">02</div>
+</section>
+
+<!-- 3 INSIGHT -->
+<section class="slide">
+  <div class="brandmark">
+    <div class="m"><svg viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <span>Safety<i>Eye</i></span>
+  </div>
+  <div class="kicker">The insight</div>
+  <h2>Every supervisor already carries<br>the entire camera system in their pocket.</h2>
+  <p class="lead" style="max-width:210mm;margin-bottom:8mm">A modern phone has a better camera than most CCTV units,
+     a processor that runs neural networks, a battery, a speaker and its own connectivity.
+     The hardware problem was solved years ago. Nobody pointed it at this.</p>
+  <div class="cols4">
+    <div class="card mint">
+      <div class="big mint">₹0</div>
+      <div class="lbl">Extra hardware</div>
+      <p style="margin-top:4mm">Uses a phone the site already owns.</p>
+    </div>
+    <div class="card mint">
+      <div class="big mint">30s</div>
+      <div class="lbl">To deploy</div>
+      <p style="margin-top:4mm">Prop it up, draw the zone with a finger, start.</p>
+    </div>
+    <div class="card mint">
+      <div class="big mint">0</div>
+      <div class="lbl">Internet needed</div>
+      <p style="margin-top:4mm">Runs with no signal, anywhere on site.</p>
+    </div>
+    <div class="card mint">
+      <div class="big mint">∞</div>
+      <div class="lbl">Redeployments</div>
+      <p style="margin-top:4mm">Move it as the hazard moves. Cabling can't.</p>
+    </div>
+  </div>
+  <div class="foot">
+    <p><strong>Fixed cameras get installed where the cabling was convenient on day one.</strong>
+       Construction hazards move as the build progresses — six weeks in, half those cameras
+       point at nothing anyone cares about. A phone follows the risk.</p>
+  </div>
+  <div class="num">03</div>
+</section>
+
+<!-- 4 WHAT IT DOES -->
+<section class="slide">
+  <div class="brandmark">
+    <div class="m"><svg viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <span>Safety<i>Eye</i></span>
+  </div>
+  <div class="kicker">What it does</div>
+  <h2>Four taps to a working safety system.</h2>
+  <div class="flow">
+    <div class="step"><div class="n">01</div><h3>Point</h3>
+      <p>Prop the phone facing the machine, the pit, the doorway. The rear camera becomes the sensor.</p>
+      <div class="arr"></div></div>
+    <div class="step"><div class="n">02</div><h3>Draw</h3>
+      <p>Drag a box on the live picture for the danger zone, another for the fire exit. Set a safe headcount.</p>
+      <div class="arr"></div></div>
+    <div class="step"><div class="n">03</div><h3>Watch</h3>
+      <p>An open-source vision model runs on the phone, finding people and objects in real time.</p>
+      <div class="arr"></div></div>
+    <div class="step"><div class="n">04</div><h3>Report</h3>
+      <p>One tap turns the shift into a formatted compliance document, generated on the device.</p></div>
+  </div>
+  <div class="cols3" style="margin-top:9mm">
+    <div class="card red">
+      <div class="ico"><svg viewBox="0 0 24 24" style="stroke:var(--red)"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></div>
+      <h3>Danger zone</h3>
+      <p>Warns as someone approaches. Logs it only if they cross anyway.</p>
+    </div>
+    <div class="card amber">
+      <div class="ico"><svg viewBox="0 0 24 24" style="stroke:var(--amber)"><path d="M16 20v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 20v-2a4 4 0 00-3-3.9"/></svg></div>
+      <h3>Overcrowding</h3>
+      <p>Counts people in frame and alerts above the safe limit for that space.</p>
+    </div>
+    <div class="card blue">
+      <div class="ico"><svg viewBox="0 0 24 24" style="stroke:var(--blue)"><path d="M14 3H6a1 1 0 00-1 1v16a1 1 0 001 1h8"/><path d="M14 3l4 2v14l-4 2z"/></svg></div>
+      <h3>Blocked fire exit</h3>
+      <p>Detects material left obstructing an escape route and flags it immediately.</p>
+    </div>
+  </div>
+  <div class="num">04</div>
+</section>
+
+<!-- 5 THE DIFFERENCE -->
+<section class="slide">
+  <div class="brandmark">
+    <div class="m"><svg viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <span>Safety<i>Eye</i></span>
+  </div>
+  <div class="kicker">What makes it different</div>
+  <h2>Every other system documents the accident.<br>This one tries to stop it.</h2>
+  <p class="lead" style="max-width:215mm">Camera-based safety products are <strong>forensic</strong>. They watch, they log, they report.
+     The worker who crossed into the machine zone finds out they broke a rule when a supervisor reads the
+     report the next day. Nobody gets warned, because a camera wired to a server room cannot speak.</p>
+  <div class="split">
+    <div class="a">
+      <div class="tag" style="color:var(--red)">Every CCTV safety system</div>
+      <h3>Person crosses the line → incident recorded → reviewed tomorrow</h3>
+      <p style="margin-top:3mm;font-size:10pt">A record of the near-miss. Useful for the insurer. Useless to the person who nearly got hurt.</p>
+    </div>
+    <div class="b">
+      <div class="tag" style="color:var(--mint)">SafetyEye</div>
+      <h3>Person heads for the line → phone calls out → they stop</h3>
+      <p style="margin-top:3mm;font-size:10pt">The device tracks how each person is moving, projects their path, and speaks a
+         warning <strong>before</strong> the breach. A logged breach means the warning failed.</p>
+    </div>
+  </div>
+  <div class="foot">
+    <div>
+      <p><strong>This is only possible because the device is physically there, with a speaker.</strong>
+         The property that makes it phone-first is the same property that makes it a different product.</p>
+    </div>
+    <div style="text-align:right;flex:none">
+      <div class="big mint">86%</div>
+      <div class="lbl">Incidents prevented<br>— a number no forensic system can report</div>
+    </div>
+  </div>
+  <div class="num">05</div>
+</section>
+
+<!-- 6 PRIVACY -->
+<section class="slide">
+  <div class="brandmark">
+    <div class="m"><svg viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <span>Safety<i>Eye</i></span>
+  </div>
+  <div class="kicker">Why workers accept it</div>
+  <h2>The supervisor sees everything.<br>The paperwork sees nobody.</h2>
+  <div class="cols">
+    <div>
+      <p style="margin-bottom:5mm">Tell a workforce there is a camera watching them and the video goes to a
+         vendor's servers, and you get resistance — reasonably. Adoption, not accuracy, is what kills safety
+         technology on real sites.</p>
+      <p style="margin-bottom:5mm">SafetyEye runs the model <strong>on the phone's own processor</strong>. There is no
+         server on the other end. The claim that footage never leaves the device is not a policy
+         promise — it is <strong>an architectural fact</strong>.</p>
+      <p>And the log and the report have different audiences. The supervisor is on site and needs to act, so
+         they see faces. The client, auditor or insurer needs to know <em>that</em> a zone was breached four
+         times on Tuesday, not <em>who</em>.</p>
+    </div>
+    <div class="fill">
+      <div class="card">
+        <h3>On this phone — faces visible</h3>
+        <p>Live view and the on-device alert log keep clear frames. You cannot intervene in real time if you
+           cannot tell who to call out to.</p>
+      </div>
+      <div class="card mint">
+        <h3>Leaving the phone — faces blurred</h3>
+        <p>The exported compliance report anonymises faces on-device, by default. Unedited frames stay with
+           the supervisor and can be produced if an incident is formally investigated.</p>
+      </div>
+      <div class="card">
+        <h3>Nothing is uploaded, ever</h3>
+        <p>No video is transmitted or stored. Only the still frame of the moment a rule was broken is
+           kept — on the device. Turn the network off and it behaves identically.</p>
+      </div>
+    </div>
+  </div>
+  <div class="num">06</div>
+</section>
+
+<!-- 7 HOW IT WORKS -->
+<section class="slide dense">
+  <div class="brandmark">
+    <div class="m"><svg viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <span>Safety<i>Eye</i></span>
+  </div>
+  <div class="kicker">How it works</div>
+  <h2>Working prototype, built and running today.</h2>
+  <div class="cols">
+    <div>
+      <ul style="display:flex;flex-direction:column;justify-content:space-between;height:100%">
+        <li><b>Open-source model, on-device.</b> COCO-SSD (MobileNet backbone) via TensorFlow.js, loaded once
+            and executed entirely in the device runtime. No inference server, no API key.</li>
+        <li><b>A rules layer on a general detector.</b> The model finds people and objects; the safety logic
+            — zone geometry, occupancy, obstruction — is ours. This is how you ship without a labelled dataset.</li>
+        <li><b>Multi-object tracker with velocity.</b> Detections are matched frame to frame and eased, giving
+            each person a smoothed trajectory. That trajectory is what makes the pre-breach warning possible.</li>
+        <li><b>Decoupled inference and render loops.</b> Detection runs to a target rate while the overlay
+            draws at 60fps against interpolated boxes — throttled, because a monitor must last a whole shift.</li>
+        <li><b>Persistent shift log.</b> Zones, settings and alerts with photographs survive a reload or the
+            phone locking. A record that evaporates is not a record.</li>
+        <li><b>Built for the deployment.</b> Screen wake lock so a propped phone doesn't sleep, haptics,
+            spoken alerts, and correct behaviour when the network drops.</li>
+      </ul>
+    </div>
+    <div class="fill">
+      <div class="card">
+        <h3>Honest scope</h3>
+        <p>The detector recognises <strong>people and objects, not hard hats</strong>. Today it enforces zone
+           intrusion, occupancy and blocked egress. PPE detection is the same pipeline with a fine-tuned
+           model swapped in — the architecture is deliberately model-agnostic.</p>
+      </div>
+      <div class="card blue">
+        <h3>Why a web runtime was the right call</h3>
+        <p>55% of the build weekend is <strong>Red Light — phone only</strong>. A native Android app needs a
+           laptop toolchain and would stall for eleven hours. A self-contained web build can be edited and
+           run entirely on the device, and ports to any phone on any site.</p>
+      </div>
+      <div class="card amber">
+        <h3>What the 30 hours are for</h3>
+        <p>Moving inference onto the Snapdragon NPU, a PPE-trained detector, and multi-phone zone coverage
+           reporting into one supervisor device.</p>
+      </div>
+    </div>
+  </div>
+  <div class="num">07</div>
+</section>
+
+<!-- 8 IMPACT + ROADMAP -->
+<section class="slide">
+  <div class="brandmark">
+    <div class="m"><svg viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <span>Safety<i>Eye</i></span>
+  </div>
+  <div class="kicker">Impact and where it goes</div>
+  <h2>One phone covers one hazard.<br>That is the unit the market actually buys.</h2>
+  <div class="cols3" style="margin-bottom:9mm">
+    <div class="card">
+      <div class="big">1</div><div class="lbl">Phone = 1 monitored zone</div>
+      <p style="margin-top:4mm">Roughly 6–7 metres of width at typical mounting distance. Not site-wide
+         surveillance — a movable monitor for the highest-risk area. We say this plainly.</p>
+    </div>
+    <div class="card">
+      <div class="big">3</div><div class="lbl">Phones ≈ ₹30,000</div>
+      <p style="margin-top:4mm">Three zones covered by refurbished handsets, against ₹2,00,000+ for a wired
+         install with a recurring subscription — and no cabling, no electrician.</p>
+    </div>
+    <div class="card mint">
+      <div class="big mint">0</div><div class="lbl">Monthly cost</div>
+      <p style="margin-top:4mm">No cloud inference, no per-camera licence. The economics work for a site that
+         exists for eight months and then moves.</p>
+    </div>
+  </div>
+  <div class="cols">
+    <div>
+      <h3 style="margin-bottom:4mm">Roadmap</h3>
+      <ul>
+        <li><b>PPE detection</b> — hard hats, high-vis, gloves, via a fine-tuned detector on the same pipeline.</li>
+        <li><b>Multi-phone fleet</b> — several devices each watching a zone, rolling up to one supervisor
+            handset over the local network. Still no cloud.</li>
+        <li><b>Pattern reporting</b> — "most breaches occur 14:00–15:00, just after lunch." Logging becomes insight.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-bottom:4mm">Who it is for</h3>
+      <p>Small and mid-sized contractors, fabrication workshops, warehouses and commercial kitchens —
+         operations of roughly 20 to 200 people that are legally responsible for safety records but have
+         no monitoring budget. In India that is the overwhelming majority of workplaces where serious
+         injuries occur.</p>
+      <p style="margin-top:4mm"><strong>The buyer is the site supervisor</strong>, not a procurement committee.
+         That is why it has to install in thirty seconds and cost nothing per month.</p>
+    </div>
+  </div>
+  <div class="num">08</div>
+</section>
+
+<!-- 9 FIT -->
+<section class="slide">
+  <div class="brandmark">
+    <div class="m"><svg viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <span>Safety<i>Eye</i></span>
+  </div>
+  <div class="kicker">Why this build, for this hackathon</div>
+  <h2>It stops making sense the moment<br>you take the phone out of it.</h2>
+  <table class="rubric">
+    <thead><tr><th>Weight</th><th>Criterion</th><th>How SafetyEye answers it</th></tr></thead>
+    <tbody>
+      <tr><td>30%</td><td><b>End product quality</b></td>
+        <td>A working prototype today, not a mockup. Persistent shift log, real report output, behaves correctly offline.</td></tr>
+      <tr><td>20%</td><td><b>Novelty and impact</b></td>
+        <td>The category is forensic; this warns before the breach and reports incidents <em>prevented</em>. Privacy is architectural, not a policy page.</td></tr>
+      <tr><td>15%</td><td><b>Creative phone use</b></td>
+        <td>Camera as the sensor, speaker as the intervention, on-device AI as the brain, plus wake lock and haptics for real deployment.</td></tr>
+      <tr><td>15%</td><td><b>Technical depth</b></td>
+        <td>Tracker with velocity prediction, decoupled inference/render loops, deliberate throttling, on-device anonymisation.</td></tr>
+      <tr><td>10%</td><td><b>Office Kit usage</b></td>
+        <td>Earned during the build weekend — the phone-only architecture means the device stays in the loop throughout.</td></tr>
+      <tr><td>10%</td><td><b>Demo</b></td>
+        <td>Draw a zone on the live camera, walk toward it, and the phone speaks before you cross. Then turn the network off — nothing changes.</td></tr>
+    </tbody>
+  </table>
+  <div class="foot">
+    <p><span class="pill mint">Local model at the core</span>
+       <span class="pill amber" style="margin-left:6px">Phone is the product, not the screen</span>
+       <span class="pill grey" style="margin-left:6px">Zero uplink by architecture</span></p>
+  </div>
+  <div class="num">09</div>
+</section>
+
+<!-- 10 CLOSE -->
+<section class="slide cover">
+  <div class="logo">
+    <div class="m"><svg viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <div class="t">Safety<i>Eye</i></div>
+  </div>
+  <h1 style="font-size:33pt">A ₹2 lakh safety system,<br>replaced by a phone you already own,<br>working with no internet.</h1>
+  <p class="sub" style="font-size:13pt">And unlike every camera on the market, it speaks up
+     <strong>before</strong> someone gets hurt — because it is standing right there.</p>
+  <div class="meta">
+    <div><b>Team Fight Club</b>Surendra Avula — frontend · Manasa Reddy — backend &amp; mobile</div>
+    <div><b>Track</b>Open Innovation</div>
+    <div><b>Status</b>Working prototype · running on-device</div>
+  </div>
+</section>
+
+</body>
+</html>
