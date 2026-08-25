@@ -1,0 +1,8 @@
+# Local recordings are not part of the web build and exceed Vercel's file limit.
+*.mp4
+*.mov
+
+# Local-only project metadata.
+.git
+.vercel
+.claude
