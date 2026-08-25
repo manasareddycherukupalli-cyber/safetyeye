@@ -740,7 +740,13 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z"/></svg>
             Start watching
           </button>
-          <button class="btn ghost" id="srcBtn" onclick="App.toggleSource()">Use the demo scene instead</button>
+          <div class="grid2">
+            <button class="btn ghost sm" id="camBtn" onclick="App.flipCamera()" aria-label="Switch camera">
+              <svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 00-14.6-4L3 9"/><path d="M3 4v5h5M4 13a8 8 0 0014.6 4L21 15"/><path d="M21 20v-5h-5"/></svg>
+              Front camera
+            </button>
+            <button class="btn ghost sm" id="srcBtn" onclick="App.toggleSource()">Use the demo scene instead</button>
+          </div>
         </div>
 
         <div class="footnote">
@@ -830,6 +836,7 @@ const App = (() => {
     tab:"home", armed:false, source:"camera", model:null, ready:false, drawMode:null,
     zones:{restricted:null, exit:null},
     limit:3, sound:true, speak:true, anonymise:true, online:navigator.onLine,
+    cameraFacing:"environment",
     siteName:"Tower B — Level 4", siteSub:"Sector 12 Construction · Shift 2 of 3",
     incidents:[], people:0, ms:0,
     startedAt:null,   // start of the CURRENT watching session (null when stopped)
@@ -1035,13 +1042,37 @@ const App = (() => {
   }
 
   /* ---------- camera ---------- */
-  async function startCamera(){
-    stopCamera();
-    const st=await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:{ideal:"environment"},width:{ideal:960}},audio:false});
+  async function requestCamera(facing){
+    try{
+      return await navigator.mediaDevices.getUserMedia({
+        video:{facingMode:{exact:facing},width:{ideal:960}},audio:false});
+    }catch(e){
+      // A few browsers expose the camera but reject exact facingMode constraints.
+      if(e.name!=="OverconstrainedError"&&e.name!=="NotFoundError") throw e;
+      return navigator.mediaDevices.getUserMedia({
+        video:{facingMode:{ideal:facing},width:{ideal:960}},audio:false});
+    }
+  }
+  function attachCamera(st,facing){
+    const actual=st.getVideoTracks()[0]?.getSettings?.().facingMode;
+    S.cameraFacing=(actual==="user"||actual==="environment")?actual:facing;
     S.stream=st; feed.srcObject=st;
     feed.style.display="block"; synth.style.display="none";
-    await feed.play().catch(()=>{});
+    syncCameraButton();
+    feed.play().catch(()=>{});
+  }
+  async function startCamera(facing=S.cameraFacing){
+    const previous=S.cameraFacing;
+    stopCamera();
+    try{
+      attachCamera(await requestCamera(facing),facing);
+    }catch(e){
+      // If a camera switch fails, restore the camera that was already working.
+      if(facing!==previous){
+        try{ attachCamera(await requestCamera(previous),previous); }catch(_e){}
+      }
+      throw e;
+    }
   }
   function stopCamera(){
     if(S.stream){S.stream.getTracks().forEach(t=>t.stop());S.stream=null}
@@ -1669,6 +1700,22 @@ const App = (() => {
       : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z"/></svg> Start watching';
     paintStats();
   }
+  async function flipCamera(){
+    const next=S.cameraFacing==="user"?"environment":"user";
+    const b=$("camBtn");
+    if(b){b.disabled=true;b.textContent="Switching camera…"}
+    try{
+      await startCamera(next);
+      S.source="camera";tracks=[];syncSource();
+      toast(next==="user"?"Front camera":"Back camera","Live camera switched",true);
+    }catch(e){
+      syncSource();
+      toast("Camera switch failed","That camera is unavailable or permission was denied",false);
+    }finally{
+      if(b)b.disabled=false;
+      syncCameraButton();
+    }
+  }
   async function toggleSource(){
     if(S.source==="camera"){S.source="sim";useSim()}
     else{
@@ -1680,9 +1727,17 @@ const App = (() => {
   function syncSource(){
     const sim=S.source==="sim";
     $("srcBtn").textContent=sim?"Use the live camera":"Use the demo scene instead";
-    $("hudSrc").textContent=sim?"Demo scene":"Live camera";
+    $("hudSrc").textContent=sim?"Demo scene":(S.cameraFacing==="user"?"Front camera":"Back camera");
     feed.style.display=sim?"none":"block";
     synth.style.display=sim?"block":"none";
+  }
+  function syncCameraButton(){
+    const b=$("camBtn");
+    if(!b) return;
+    const next=S.cameraFacing==="user"?"environment":"user";
+    const label=next==="user"?"Front camera":"Back camera";
+    b.innerHTML='<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 00-14.6-4L3 9"/><path d="M3 4v5h5M4 13a8 8 0 0014.6 4L21 15"/><path d="M21 20v-5h-5"/></svg>'+label;
+    b.setAttribute("aria-label","Switch to "+label.toLowerCase());
   }
   function limit(d){
     S.limit=Math.max(1,Math.min(12,S.limit+d));
