@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#0A0D11">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>SafetyEye — On-Device Workplace Safety Monitor</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -417,6 +421,29 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
 
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+
+/* ---------- real phone ----------
+   On a laptop the app sits inside a mock device so it reads as a phone screen.
+   On an actual phone that mock is nonsense — a fake bezel, notch and status bar
+   squeezed inside the real ones. Below tablet width the chrome is dropped and the
+   app simply becomes the screen.                                              */
+@media (max-width: 560px){
+  body{padding:0;gap:0;background:var(--bg);height:100dvh}
+  body::before,body::after{display:none}
+  .brand{display:none}
+  .device{padding:0;border-radius:0;background:none;box-shadow:none}
+  .device::before,.device::after{display:none}
+  .screen{
+    width:100vw;height:100dvh;border-radius:0;box-shadow:none;
+  }
+  .notch,.glare,.home-ind,.statusbar{display:none}
+  /* keep clear of the real notch and home bar */
+  .views{padding-top:env(safe-area-inset-top)}
+  .toast{top:calc(12px + env(safe-area-inset-top))}
+  .onb{padding-top:calc(34px + env(safe-area-inset-top))}
+  .tabs{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .stagewrap{aspect-ratio:4/5}
 }
 </style>
 </head>
